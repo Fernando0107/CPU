@@ -47,7 +47,7 @@ class Registers(Memory):
 class Ram(Memory):
     
     def __init__(self):
-        self.RAM = super().memoria*2
+        self.RAM = super().memoria*4
 
 
 reg = Registers()
