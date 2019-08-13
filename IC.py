@@ -1,4 +1,4 @@
-class IC: 
+class IC:
 
     def __init__(self, name, manufacture, build_date, porpose):
         self.name = name
@@ -6,9 +6,11 @@ class IC:
         self.build = build_date
         self.porpose = porpose
 
+
 class Memory(IC):
 
     pass
+
 
 class ALU(IC):
 
@@ -37,6 +39,9 @@ class Registers(Memory):
         self.IR = ""
         self.OR = ""
 
+
 class Ram(Memory):
+
+    self.bits = [None]*4
 
     pass
