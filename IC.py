@@ -9,7 +9,7 @@ class IC:
 
 class Memory(IC):
 
-    pass
+    memoria = [None] * 4
 
 
 class ALU(IC):
@@ -31,17 +31,27 @@ class CU(IC):
 class Registers(Memory):
 
     def __init__(self):
-        self.A = ""
-        self.B = ""
-        self.C = ""
-        self.D = ""
+        self.A = super().memoria
+        self.B = super().memoria
+        self.C = super().memoria
+        self.D = super().memoria
         self.PC = 0
-        self.IR = ""
-        self.OR = ""
+        self.IR = super().memoria
+        self.OR = super().memoria
+
+    def write(binario, registro):
+        for x in range(len(binario)):
+            registro[x] = int(binario[x])
 
 
 class Ram(Memory):
+    
+    def __init__(self):
+        self.RAM = super().memoria*2
 
-    self.bits = [None]*4
 
-    pass
+reg = Registers()
+REM = Ram()
+
+Registers.write('0110', reg.A)
+print(reg.A)
