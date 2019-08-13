@@ -25,8 +25,15 @@ class ALU(IC):
 
 class CU(IC):
 
-    pass
+    def read_file(filename):
 
+        #Open File and split
+        f = open(filename, "r")
+        lines = f.readlines()
+        for i in lines:
+            spliter = i.split(" ")
+        
+        return spliter
 
 class Registers(Memory):
 
@@ -47,11 +54,18 @@ class Registers(Memory):
 class Ram(Memory):
     
     def __init__(self):
-        self.RAM = super().memoria*4
+        self.RAM = super().memoria*4                #Memoria de 16 bits 
 
 
 reg = Registers()
 REM = Ram()
+read = CU()
 
-Registers.write('0110', reg.A)
-print(reg.A)
+#Registers.write('0110', reg.A)
+#print(reg.A)
+
+#CU.read_file('instrucciones.code')
+
+
+Registers.write(CU.read_file('instrucciones.code')[0], reg.A)
+print('test:',reg.A)
