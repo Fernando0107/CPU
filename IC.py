@@ -23,15 +23,26 @@ class ALU(IC):
         self.out = Output
 
 
-class CU(IC):
+class CU():
 
     def read_file(filename):
 
         #Open File and split
-        f = open(filename, "r")
-        lines = f.readlines()
-        for i in lines:
-            spliter = i.split(" ")
+        alm = []                                            #Almacenador de input 
+        spliter = []                                        #Almacenador de input sin # y por espacios
+        for line in open(filename):
+            li = line.strip()
+
+            if not li.startswith("#"):                      #Ignorar el # del archivo
+
+                x = line.rstrip()
+
+                alm.append(x)
+
+        for i in range(len(alm)):
+            spliter = spliter + alm[i].split(" ")               #Hacer el split cuando haya un espacio
+
+        #print('Splitter:', spliter)
         
         return spliter
 
@@ -68,4 +79,4 @@ read = CU()
 
 
 Registers.write(CU.read_file('instrucciones.code')[0], reg.A)
-print('test:',reg.A)
+print('Test Registro A:\n',reg.A)
