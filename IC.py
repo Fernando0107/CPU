@@ -42,8 +42,6 @@ class CU():
         for i in range(len(alm)):
             spliter = spliter + alm[i].split(" ")               #Hacer el split cuando haya un espacio
 
-        #print('Splitter:', spliter)
-        
         return spliter
 
 class Registers(Memory):
@@ -78,5 +76,5 @@ read = CU()
 #CU.read_file('instrucciones.code')
 
 
-Registers.write(CU.read_file('instrucciones.code')[0], reg.A)
+Registers.write(CU.read_file('instructions.code')[0], reg.A)
 print('Test Registro A:\n',reg.A)
