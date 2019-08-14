@@ -78,4 +78,3 @@ read = CU()
 
 Registers.write(CU.read_file('instructions.code')[0], reg.A)
 print('Test Registro A:\n',reg.A)
-#prueba
