@@ -22,6 +22,9 @@ class ALU(IC):
         self.inp = Input
         self.out = Output
 
+    def addition(operand1, operand2):
+        result = str(bin(int(operand1, 2) + int(operand2, 2))).replace('b', '0', 1)
+        return result
 
 class CU():
 
@@ -78,3 +81,4 @@ read = CU()
 
 Registers.write(CU.read_file('instructions.code')[0], reg.A)
 print('Test Registro A:\n',reg.A)
+print(ALU.addition('0001', '0010'))
