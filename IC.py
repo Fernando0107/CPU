@@ -1,3 +1,5 @@
+import time
+
 class IC:
 
     def __init__(self, name, manufacture, build_date, porpose):
@@ -23,7 +25,7 @@ class ALU(IC):
         self.out = Output
 
     def addition(operand1, operand2):
-        result = str(bin(int(operand1, 2) + int(operand2, 2))).replace('b', '0', 1)
+        result = str(bin(int(operand1, 2) + int(operand2, 2))).replace('b', '0', 1)     # Transforma los operandos en integers, luego opera binariamente sobre estos
         return result
 
 class CU():
@@ -47,6 +49,19 @@ class CU():
 
         return spliter
 
+    def read_bios_ram(filename, ram):                               # Buscar los datos a cargar en la RAM
+        x = 0
+        with open(filename, 'r') as f:
+            for line in f:
+                if 'RAM_' in line:
+                    for line in f:
+                        li = line.strip()
+                        ram.append(li[2][0])
+                        x += 1
+        for y in range(len(ram)):                                   # Cambiar los strings a ints
+            ram[y] = int(ram[y])
+        return ram
+
 class Registers(Memory):
 
     def __init__(self):
@@ -66,19 +81,20 @@ class Registers(Memory):
 class Ram(Memory):
     
     def __init__(self):
-        self.RAM = super().memoria*4                #Memoria de 16 bits 
+        self.RAM = []                #Memoria de 16 bits 
 
+class Clock(IC):
+
+    def Hz():
+        time.sleep(float(CU.read_file('bios.yml')[1]))        # La velocidad del reloj esta definida por el archivo bios.yaml
 
 reg = Registers()
 REM = Ram()
 read = CU()
-
-#Registers.write('0110', reg.A)
-#print(reg.A)
-
-#CU.read_file('instrucciones.code')
+print(CU.read_bios_ram('bios.yml', REM.RAM))                  # Imprime los valores de la ram en decimales
 
 
-Registers.write(CU.read_file('instructions.code')[0], reg.A)
-print('Test Registro A:\n',reg.A)
-print(ALU.addition('0001', '0010'))
+
+#Registers.write(CU.read_file('instructions.code')[0], reg.A)
+#print('Test Registro A:\n',reg.A)
+#print(ALU.addition('0001', '0010'))

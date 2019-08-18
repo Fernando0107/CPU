@@ -1,5 +1,5 @@
 # set Clock freq (Hz), possible values: Range 0-2, being 0 = step and -1 = infinite or as fast as you can.
-clock: 1.2
+clock: 1.0
 
 # turn on visualization and specify which things to print
 visualization:
@@ -9,7 +9,7 @@ visualization:
     ALU: true
 
 # RAM array
-RAM:
+RAM_:
   - 4
   - 10
   - 0
