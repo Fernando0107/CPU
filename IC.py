@@ -9,9 +9,10 @@ class IC:
         self.porpose = porpose
 
 
-class Memory(IC):
+class Memory():
 
-    memoria = [None] * 4
+    def __init__(self, size):
+        self.memoria = [None] * size
 
 
 class ALU(IC):
@@ -24,13 +25,20 @@ class ALU(IC):
         self.inp = Input
         self.out = Output
 
+    def convert(operand):
+        s = [str(i) for i in operand]
+        result = "".join(s)
+        return result
+
     def addition(operand1, operand2):
+        operand1 = ALU.convert(operand1)
+        operand2 = ALU.convert(operand2)
         result = str(bin(int(operand1, 2) + int(operand2, 2))).replace('b', '0', 1)     # Transforma los operandos en integers, luego opera binariamente sobre estos
         return result
 
 class CU():
 
-    def read_file(filename):
+    def read_instructions(filename):
 
         #Open File and split
         alm = []                                            #Almacenador de input 
@@ -62,16 +70,20 @@ class CU():
             ram[y] = int(ram[y])
         return ram
 
+    def turn_on(self, filename1, filename2, ram):
+        self.read_bios_ram(filename1, ram)
+        self.read_instructions(filename2)
+
+
 class Registers(Memory):
 
-    def __init__(self):
-        self.A = super().memoria
-        self.B = super().memoria
-        self.C = super().memoria
-        self.D = super().memoria
-        self.PC = 0
-        self.IR = super().memoria
-        self.OR = super().memoria
+    A = Memory(4).memoria
+    B = Memory(4).memoria
+    C = Memory(4).memoria
+    D = Memory(4).memoria
+    PC = 0
+    IR = Memory(4).memoria
+    OR = Memory(4).memoria
 
     def write(binario, registro):
         for x in range(len(binario)):
@@ -81,20 +93,23 @@ class Registers(Memory):
 class Ram(Memory):
     
     def __init__(self):
-        self.RAM = []                #Memoria de 16 bits 
+        self.RAM = []                # Memoria de 16 bits 
 
 class Clock(IC):
 
     def Hz():
         time.sleep(float(CU.read_file('bios.yml')[1]))        # La velocidad del reloj esta definida por el archivo bios.yaml
 
-reg = Registers()
+reg = Registers(4)
 REM = Ram()
 read = CU()
-print(CU.read_bios_ram('bios.yml', REM.RAM))                  # Imprime los valores de la ram en decimales
 
+CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decimales
 
+instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
 
-#Registers.write(CU.read_file('instructions.code')[0], reg.A)
-#print('Test Registro A:\n',reg.A)
-#print(ALU.addition('0001', '0010'))
+Registers.write(instruc[0], reg.A)
+Registers.write(instruc[1], reg.B)
+Registers.write(ALU.addition(reg.A, reg.B), reg.C)
+print(reg.C)
+
