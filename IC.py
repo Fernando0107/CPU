@@ -64,7 +64,7 @@ class CU():
                 if 'RAM_' in line:
                     for line in f:
                         li = line.strip()
-                        ram.append(li[2][0])
+                        ram[x] = li[2][0] 
                         x += 1
         for y in range(len(ram)):                                   # Cambiar los strings a ints
             ram[y] = int(ram[y])
@@ -92,8 +92,8 @@ class Registers(Memory):
 
 class Ram(Memory):
     
-    def __init__(self):
-        self.RAM = []                # Memoria de 16 bits 
+    def __init__(self, size):
+        self.RAM = Memory(size).memoria              # Memoria de 16 bits 
 
 class Clock(IC):
 
@@ -101,7 +101,7 @@ class Clock(IC):
         time.sleep(float(CU.read_file('bios.yml')[1]))        # La velocidad del reloj esta definida por el archivo bios.yaml
 
 reg = Registers(4)
-REM = Ram()
+REM = Ram(16)
 read = CU()
 
 CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decimales
@@ -112,4 +112,5 @@ Registers.write(instruc[0], reg.A)
 Registers.write(instruc[1], reg.B)
 Registers.write(ALU.addition(reg.A, reg.B), reg.C)
 print(reg.C)
+print(REM.RAM)
 
