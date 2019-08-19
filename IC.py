@@ -258,7 +258,7 @@ instruc = CU.read_instructions('instructions.code')                      # Instr
 
 Registers.write(instruc[0], reg.A)
 Registers.write(instruc[1], reg.B)
-Registers.write(ALU.addition(reg.A, reg.B), reg.C)
+Registers.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
 print(reg.C)
 print(REM.RAM)
 
