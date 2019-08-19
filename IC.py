@@ -27,7 +27,7 @@ class CU():
 
             if not li.startswith("#"):                      #Ignorar el # del archivo
 
-                x = line.rstrip()
+                x = line.rstrip()                           #Remueve la linea con #
 
                 alm.append(x)
 
