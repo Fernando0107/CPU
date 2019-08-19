@@ -143,9 +143,9 @@ class Ram(Memory):
 class ALU(IC):
     
     def __init__(self):
-        self.zero = False
-        self.Overflow = False
-        self.Negative = False
+        self.ZERO = False
+        self.OVERFLOW = False
+        self.NEGATIVE = False
         #self.op = OPcode
         #self.inp = Input
         #self.out = Output
@@ -159,11 +159,89 @@ class ALU(IC):
 
         print('Output:\n', value)
 
-    def addition(operand1, operand2):
+    def ADD(self, operand1, operand2):
         operand1 = ALU.convert(operand1)
         operand2 = ALU.convert(operand2)
         result = str(bin(int(operand1, 2) + int(operand2, 2))).replace('b', '0', 1)     # Transforma los operandos en integers, luego opera binariamente sobre estos
         return result
+    #ADRIANA FUNCIONES ALU
+    #def INPUT(self, value):
+
+
+    def SUB(self, operandsub, operandsub2):
+        operandsub = ALU.convert(operandsub)
+        operandsub2=ALU.convert(operandsub2)
+        resultsub=str(bin(int(operandsub, 2)-int(operandsub2, 2))).replace('b','0',1)
+        return resultsub
+
+    def AND(self, operanda,operandb):
+        operanda=ALU.convert(operanda)
+        operandb=ALU.convert(operandb)
+        if operanda==True and operandb== True:
+            return True
+        else:
+            return False
+
+    def OR(self, operanda1,operandb1):
+        operanda1=ALU.convert(operanda1)
+        operandb1=ALU.convert(operandb1)
+        if operanda1==True:
+            return True
+        elif operandb1==True:
+            return True
+        else:
+            return False
+
+    def NAND(self, operanda2, operandb2):
+        operanda2 = ALU.convert(operanda2)
+        operandb2 = ALU.convert(operandb2)
+        if operanda2 == True and operandb2 == True:
+            return False
+        else:
+            return True
+
+    def XOR(self, operanda3, operandb3):
+        operanda3 = ALU.convert(operanda3)
+        operandb3 = ALU.convert(operandb3)
+        if operanda3 != operandb3:
+            return True
+        else:
+            return False
+
+    def TAUT(operanda4, operandb4):
+        return True
+
+    def DIV(self, operanddiv, operanddiv2):
+        operanddiv = ALU.convert(operanddiv)
+        operanddiv2 = ALU.convert(operanddiv2)
+        resultdiv = str(bin(int(operanddiv, 2)/int(operanddiv2,2))).replace('b', '0', 1)
+        return resultdiv
+
+    def MULT(self, operandmult, operandmult2):
+        operandmult = ALU.convert(operandmult)
+        operandmult2 = ALU.convert(operandmult2)
+        resultmult = str(bin(int(operandmult,2)*(operandmult2,2))).replace('b','0',1)
+        return resultmult
+
+    def NEGATIVE(self, operandneg):
+       #operandneg = ALU.convert(operandneg)
+        if operandneg<0:
+            return True
+            print("Negative number")
+
+    def OVERFLOW(self):
+        pass
+
+
+    def NOT(self, operandnot):
+       #operandnot = ALU.convert(operandnot)
+        return ~operandnot
+
+    def ZERO(self, operand0):
+        if operand0 == "":
+            return True
+
+
 
 class Clock(IC):
 
