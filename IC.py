@@ -130,9 +130,6 @@ class Registers(Memory):
     IR = Memory(4).memoria
     OR = Memory(4).memoria
 
-    def write(binario, registro):
-        for x in range(len(binario)):
-            registro[x] = int(binario[x])
 
 
 class Ram(Memory):
@@ -142,13 +139,26 @@ class Ram(Memory):
 
 class ALU(IC):
     
+    OVERFLOW_FLAG = False
+
     def __init__(self):
         self.ZERO = False
-        self.OVERFLOW = False
         self.NEGATIVE = False
         #self.op = OPcode
         #self.inp = Input
         #self.out = Output
+
+    def write(binario, registro):
+        try:
+            for x in range(len(binario)):
+                registro[x] = int(binario[x])
+        except IndexError:
+            if binario[0] == '1':
+                ALU.OVERFLOW_FLAG = True
+            y = 1
+            for x in range(len(registro)):
+                registro[x] = int(binario[y])
+                y += 1
 
     def convert(operand):
         s = [str(i) for i in operand]
@@ -238,9 +248,6 @@ class ALU(IC):
             return True
             print("Negative number")
 
-    def OVERFLOW(self):
-        pass
-
 
     def NOT(self, operandnot):
        #operandnot = ALU.convert(operandnot)
@@ -265,11 +272,12 @@ CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Impri
 
 instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
 
-Registers.write(instruc[0], reg.A)
-Registers.write(instruc[1], reg.B)
-Registers.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
+ALU.write(instruc[0], reg.A)
+ALU.write(instruc[1], reg.B)
+ALU.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
 print(reg.C)
 print(REM.RAM)
+print(ALU.OVERFLOW_FLAG)
 
 testOp = CU.opCode(0000,50)         #CU.opCode(Opcode, valor)
 testOp2 = CU.opCode('OUTPUT',70)         #CU.opCode(Opcode, valor)
