@@ -1,4 +1,5 @@
 import time
+import random
 
 class IC:
 
@@ -191,9 +192,18 @@ class ALU(IC):
         result = str(RAM[addrs])
         result = ALU.fill(result)
         ALU.write(result, operand)
-    def LD_B(value):
-    
-        pass
+
+    def LD_B(operand, address, RAM):
+        addrs = ALU.decimal(address)
+        result = str(RAM[addrs])
+        result = ALU.fill(result)
+        ALU.write(result, operand)
+
+    def LD_RD(operand):
+        result = random.randint(0, 15)
+        result = ALU.binary(result)
+        result = ALU.fill(result)
+        ALU.write(result, operand)
     
 
     def ADD(self, operand1, operand2):
@@ -229,14 +239,6 @@ class ALU(IC):
         else:
             return False
 
-    def NAND(self, operanda2, operandb2):
-        operanda2 = ALU.convert(operanda2)
-        operandb2 = ALU.convert(operandb2)
-        if operanda2 == True and operandb2 == True:
-            return False
-        else:
-            return True
-
     def XOR(self, operanda3, operandb3):
         operanda3 = ALU.convert(operanda3)
         operandb3 = ALU.convert(operandb3)
@@ -244,21 +246,6 @@ class ALU(IC):
             return True
         else:
             return False
-
-    def TAUT(operanda4, operandb4):
-        return True
-
-    def DIV(self, operanddiv, operanddiv2):
-        operanddiv = ALU.convert(operanddiv)
-        operanddiv2 = ALU.convert(operanddiv2)
-        resultdiv = str(bin(int(operanddiv, 2)/int(operanddiv2,2))).replace('b', '0', 1)
-        return resultdiv
-
-    def MULT(self, operandmult, operandmult2):
-        operandmult = ALU.convert(operandmult)
-        operandmult2 = ALU.convert(operandmult2)
-        resultmult = str(bin(int(operandmult,2)*(operandmult2,2))).replace('b','0',1)
-        return resultmult
 
     def NEGATIVE(self, operandneg):
        #operandneg = ALU.convert(operandneg)
@@ -297,6 +284,7 @@ print(reg.C)
 print(REM.RAM)
 print(ALU.OVERFLOW_FLAG)'''
 ALU.LD_A(reg.A, '0000', REM.RAM)
-print(reg.A)
+ALU.LD_B(reg.B, '0111', REM.RAM)
+print(ALU.DIV(ALU, reg.A, reg.B))
 testOp = CU.opCode(0000,50)         #CU.opCode(Opcode, valor)
 testOp2 = CU.opCode('OUTPUT',70)         #CU.opCode(Opcode, valor)
