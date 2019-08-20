@@ -43,7 +43,7 @@ class CU():
                 if 'RAM_' in line:
                     for line in f:
                         li = line.strip()
-                        ram[x] = li[2][0] 
+                        ram[x] = ALU.binary(int(li[2][0])) 
                         x += 1
         for y in range(len(ram)):                                   # Cambiar los strings a ints
             ram[y] = int(ram[y])
@@ -165,14 +165,32 @@ class ALU(IC):
         result = "".join(s)
         return result
 
-    def OUTPUT(self,value):
+    def decimal(n):
+        return int(n, 2)
 
+    def binary(n):
+        return bin(n).replace("0b", "")
+
+    def fill(uncomp):
+        if len(uncomp) == 1:
+            uncomp = '000'+uncomp
+        if len(uncomp) == 2:
+            uncomp = '00'+uncomp
+        if len(uncomp) == 3:
+            uncomp = '0'+uncomp
+        else:
+            pass
+        return uncomp 
+
+
+    def OUTPUT(self,value):
         print('Output:\n', value)
 
-    def LD_A(value):
-
-        pass
-
+    def LD_A(operand, address, RAM):
+        addrs = ALU.decimal(address)
+        result = str(RAM[addrs])
+        result = ALU.fill(result)
+        ALU.write(result, operand)
     def LD_B(value):
     
         pass
@@ -272,12 +290,13 @@ CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Impri
 
 instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
 
-ALU.write(instruc[0], reg.A)
+'''ALU.write(instruc[0], reg.A)
 ALU.write(instruc[1], reg.B)
 ALU.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
 print(reg.C)
 print(REM.RAM)
-print(ALU.OVERFLOW_FLAG)
-
+print(ALU.OVERFLOW_FLAG)'''
+ALU.LD_A(reg.A, '0000', REM.RAM)
+print(reg.A)
 testOp = CU.opCode(0000,50)         #CU.opCode(Opcode, valor)
 testOp2 = CU.opCode('OUTPUT',70)         #CU.opCode(Opcode, valor)
