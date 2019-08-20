@@ -141,10 +141,10 @@ class Ram(Memory):
 class ALU(IC):
     
     OVERFLOW_FLAG = False
+    NEGATIVE_FLAG = False
 
     def __init__(self):
         self.ZERO = False
-        self.NEGATIVE = False
         #self.op = OPcode
         #self.inp = Input
         #self.out = Output
@@ -183,6 +183,12 @@ class ALU(IC):
             pass
         return uncomp 
 
+    def negative(value):
+        if value[0] == '-':
+            ALU.NEGATIVE_FLAG = True
+            value = value.replace('-', '0', 1)
+        return value
+
 
     def OUTPUT(self,value):
         print('Output:\n', value)
@@ -219,6 +225,7 @@ class ALU(IC):
         operandsub = ALU.convert(operandsub)
         operandsub2=ALU.convert(operandsub2)
         resultsub=str(bin(int(operandsub, 2)-int(operandsub2, 2))).replace('b','0',1)
+        resultsub = ALU.negative(resultsub)
         return resultsub
 
     def AND(self, operanda,operandb):
@@ -254,8 +261,9 @@ class ALU(IC):
             print("Negative number")
 
 
-    def NOT(self, operandnot):
-       #operandnot = ALU.convert(operandnot)
+    def NOT(operandnot):
+        operandnot = int(ALU.convert(operandnot))
+
         return ~operandnot
 
     def ZERO(self, operand0):
@@ -283,8 +291,6 @@ ALU.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
 print(reg.C)
 print(REM.RAM)
 print(ALU.OVERFLOW_FLAG)'''
-ALU.LD_A(reg.A, '0000', REM.RAM)
-ALU.LD_B(reg.B, '0111', REM.RAM)
-print(ALU.DIV(ALU, reg.A, reg.B))
-testOp = CU.opCode(0000,50)         #CU.opCode(Opcode, valor)
-testOp2 = CU.opCode('OUTPUT',70)         #CU.opCode(Opcode, valor)
+ALU.write('0010', reg.B)
+ALU.write('0001', reg.A)
+print(ALU.SUB(ALU, reg.A, reg.B), ALU.NEGATIVE_FLAG)
