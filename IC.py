@@ -159,6 +159,15 @@ class ALU(IC):
 
         print('Output:\n', value)
 
+    def LD_A(value):
+
+        pass
+
+    def LD_B(value):
+    
+        pass
+    
+
     def ADD(self, operand1, operand2):
         operand1 = ALU.convert(operand1)
         operand2 = ALU.convert(operand2)
@@ -262,5 +271,5 @@ Registers.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
 print(reg.C)
 print(REM.RAM)
 
-testOp = CU.opCode(0000,10)         #CU.opCode(Opcode, valor)
+testOp = CU.opCode(0000,50)         #CU.opCode(Opcode, valor)
 testOp2 = CU.opCode('OUTPUT',70)         #CU.opCode(Opcode, valor)
