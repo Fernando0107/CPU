@@ -142,12 +142,13 @@ class ALU(IC):
     
     OVERFLOW_FLAG = False
     NEGATIVE_FLAG = False
+    ZERO_FLAG = False
 
     def __init__(self):
-        self.ZERO = False
         #self.op = OPcode
         #self.inp = Input
         #self.out = Output
+        pass
 
     def write(binario, registro):
         try:
@@ -217,8 +218,6 @@ class ALU(IC):
         operand2 = ALU.convert(operand2)
         result = str(bin(int(operand1, 2) + int(operand2, 2))).replace('b', '0', 1)     # Transforma los operandos en integers, luego opera binariamente sobre estos
         return result
-    #ADRIANA FUNCIONES ALU
-    #def INPUT(self, value):
 
 
     def SUB(self, operandsub, operandsub2):
@@ -262,15 +261,24 @@ class ALU(IC):
 
 
     def NOT(operandnot):
-        operandnot = int(ALU.convert(operandnot))
+        
+        y = 0
 
-        return ~operandnot
+        for x in operandnot:
+            if x == 0:
+                operandnot[y]=1
+            else:
+                operandnot[y]=0
+            y+=1
+        return operandnot
 
-    def ZERO(self, operand0):
-        if operand0 == "":
-            return True
+    def ZERO(operand0):
 
-
+        alm = ['0000',0000]
+        if operand0 in alm:
+            ALU.ZERO_FLAG = True
+        else:
+            ALU.ZERO_FLAG = False
 
 class Clock(IC):
 
@@ -293,4 +301,9 @@ print(REM.RAM)
 print(ALU.OVERFLOW_FLAG)'''
 ALU.write('0010', reg.B)
 ALU.write('0001', reg.A)
-print(ALU.SUB(ALU, reg.A, reg.B), ALU.NEGATIVE_FLAG)
+
+ALU.ZERO('0000')
+
+
+print(ALU.NOT(reg.A))
+print(ALU.ZERO_FLAG)
