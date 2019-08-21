@@ -276,7 +276,7 @@ class ALU(IC):
 
         alm = ['0000',0000]
         if operand0 in alm:
-            ALU.ZERO_FLAG = True
+            ALU.ZERO_FLAG = True                             # Se arreglo la funcion
         else:
             ALU.ZERO_FLAG = False
 
