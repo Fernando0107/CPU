@@ -149,6 +149,18 @@ class ALU(IC):
     def binary(n):
         return bin(n).replace("0b", "")
 
+     def STR_A(operand, address, RAM):
+        result = ALU.convert(operand)
+        result = int(result)
+        addrs = ALU.decimal(address)
+        RAM[addrs] = result
+
+    def STR_B(operand, address, RAM):
+        result = ALU.convert(operand)
+        result = int(result)
+        addrs = ALU.decimal(address)
+        RAM[addrs] = result
+
     def fill(uncomp):
         if len(uncomp) == 1:
             uncomp = '000'+uncomp
