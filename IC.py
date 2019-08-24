@@ -149,7 +149,7 @@ class ALU(IC):
     def binary(n):
         return bin(n).replace("0b", "")
 
-     def STR_A(operand, address, RAM):
+    def STR_A(operand, address, RAM):
         result = ALU.convert(operand)
         result = int(result)
         addrs = ALU.decimal(address)
@@ -216,23 +216,22 @@ class ALU(IC):
         return resultsub
 
     def AND(self, operanda, operandb):
-        operanda = ALU.convert(operanda)
-        operandb = ALU.convert(operandb)
-        if operanda == True and operandb == True:
-            return True
-        else:
-            return False
+        result = [0, 0, 0, 0]
+        for i in range(len(result)):
+            if operanda[i] == operandb[i]:
+                result[i] = 1
+            else:  
+                result[i] = 0
+        return result
 
-    def OR(self, operanda1, operandb1):
-        operanda1 = ALU.convert(operanda1)
-        operandb1 = ALU.convert(operandb1)
-        if operanda1 == True:
-            return True
-        elif operandb1 == True:
-            return True
-        else:
-            return False
-
+    def OR(self, operanda, operandb):
+        result = [0, 0, 0, 0]
+        for i in range(len(result)):
+            if operanda[i] == operandb[i]:
+                result[i] = 0
+            else:  
+                result[i] = 1
+        return result
     def XOR(self, operanda3, operandb3):
         operanda3 = ALU.convert(operanda3)
         operandb3 = ALU.convert(operandb3)
@@ -283,13 +282,13 @@ ALU.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
 print(reg.C)
 print(REM.RAM)
 print(ALU.OVERFLOW_FLAG)
-ALU.write('0010', reg.B)
-ALU.write('0001', reg.A)
 '''
+ALU.write('1100', reg.B)
+ALU.write('1110', reg.A)
 
-ALU.ZERO('0000')
+print(ALU.OR(ALU, reg.A, reg.B))
 
-CU.opCode(0000,70)
+"""CU.opCode(0000,70)
 
 print(ALU.NOT(reg.A))
-print(ALU.ZERO_FLAG)
+print(ALU.ZERO_FLAG)"""
