@@ -40,7 +40,12 @@ class CU():
                 if 'RAM_' in line:
                     for line in f:
                         li = line.strip()
-                        ram[x] = ALU.binary(int(li[2][0])) 
+                        try:
+                            li = li[2] + li[3]
+                            ram[x] = ALU.binary(int(li))
+                        except:
+                            ram[x] = ALU.binary(int(li[2]))
+                        
                         x += 1
         for y in range(len(ram)):                                   # Cambiar los strings a ints
             ram[y] = int(ram[y])
@@ -50,7 +55,7 @@ class CU():
         self.read_bios_ram(filename1, ram)
         self.read_instructions(filename2)
 
-    def opCode(opcode, value):
+    def opCode(opcode, value=0, value2='default', value3='default'):
 
         #self.instruction = opcode
         #self.value = value
@@ -90,16 +95,19 @@ class CU():
             'NOT': 'NOT',
             'HLT': 'HALT'
         }
-
         if str(opcode).isdigit():                                               #Revisa si el opcode es un numero o es un strig
 
             if opcode in alm:                                                       #Verifica si el numero esta en el almacenador de opcodes en digitos 
                 
                 x = ins[int(opcode)]                                            #Almacena el valor del Opcode, que sera el atributo del motodo ALU
-
                 brain = getattr(ALU(), x, '\nOpcode instruction is not valid.\n')    # getatrr es equivalente a objeto.atrubuto | retorna el atributo
                 
-                brain(value)                                                     #Manda a llamar la funcion  manda el valor a el metodo 
+                if value2 == 'default' and value3 == 'default':
+                    brain(value)
+                if value2 != 'default' and value3 == 'default':
+                    brain(value, value2)
+                if value2 != 'default' and value3 != 'default':
+                    brain(value, value2, value3)                                                             #Manda a llamar la funcion  manda el valor a el metodo 
 
             else:
                 print('\nOpcode instruction is not valid.\n')
@@ -108,10 +116,14 @@ class CU():
             if opcode in alm2:                                                  #Verifica si el string  esta en el almacenador de opcodes en string
 
                 y = ins[(opcode)]
-                
                 brain = getattr(ALU(), y, '\nOpcode instruction is not valid.\n')
 
-                brain(value) 
+                if value2 == 'default' and value3 == 'default':
+                    brain(value)
+                if value2 != 'default' and value3 == 'default':
+                    brain(value, value2)
+                if value2 != 'default' and value3 != 'default':
+                    brain(value, value2, value3)     
             else:
                 print('\nOpcode instruction is not valid.\n')
 class ALU(IC):
@@ -149,13 +161,13 @@ class ALU(IC):
     def binary(n):
         return bin(n).replace("0b", "")
 
-    def STR_A(operand, address, RAM):
+    def STR_A(self, operand, address, RAM):
         result = ALU.convert(operand)
         result = int(result)
         addrs = ALU.decimal(address)
         RAM[addrs] = result
 
-    def STR_B(operand, address, RAM):
+    def STR_B(self, operand, address, RAM):
         result = ALU.convert(operand)
         result = int(result)
         addrs = ALU.decimal(address)
@@ -181,19 +193,19 @@ class ALU(IC):
     def OUTPUT(self, value):
         print('Output:\n', value)
 
-    def LD_A(operand, address, RAM):
+    def LD_A(self, operand, address, RAM):
         addrs = ALU.decimal(address)
         result = str(RAM[addrs])
         result = ALU.fill(result)
         ALU.write(result, operand)
 
-    def LD_B(operand, address, RAM):
+    def LD_B(self, operand, address, RAM):
         addrs = ALU.decimal(address)
         result = str(RAM[addrs])
         result = ALU.fill(result)
         ALU.write(result, operand)
 
-    def LD_RD(operand):
+    def LD_RD(self, operand):
         result = random.randint(0, 15)
         result = ALU.binary(result)
         result = ALU.fill(result)
@@ -222,9 +234,9 @@ class ALU(IC):
                 result[i] = 1
             else:  
                 result[i] = 0
-        return result
+        ALU.write(result, operandb)
 
-    def OR(self, operanda, operandb):
+    def OR(operanda, operandb):
         result = [0, 0, 0, 0]
         for i in range(len(result)):
             if operanda[i] == operandb[i]:
@@ -232,13 +244,6 @@ class ALU(IC):
             else:  
                 result[i] = 1
         return result
-    def XOR(self, operanda3, operandb3):
-        operanda3 = ALU.convert(operanda3)
-        operandb3 = ALU.convert(operandb3)
-        if operanda3 != operandb3:
-            return True
-        else:
-            return False
 
     def NEGATIVE(self, operandneg):
        #operandneg = ALU.convert(operandneg)
@@ -284,12 +289,16 @@ print(reg.C)
 print(REM.RAM)
 print(ALU.OVERFLOW_FLAG)
 '''
-ALU.write(instruc[1], reg.A)
 
-#ALU.ZERO('0000')
-print('Registro A:\n', reg.A)
-CU.opCode(instruc[0],reg.A)
-print('Registro A negado:\n',reg.A)
+
+ALU.write('1111', reg.A)
+ALU.write('1001', reg.B)
+
+CU.opCode('AND', reg.A, reg.B)
+print(reg.B)
+print(REM.RAM)
+print(reg.A)
+
 
 #print(ALU.NOT(reg.A))
 #print(ALU.ZERO_FLAG)
