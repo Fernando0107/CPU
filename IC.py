@@ -1,7 +1,6 @@
 from Memory import *                                            #From file Memory, import erything
 from Clock import *
 #from ALU import *
-import time
 import random
 
 
@@ -55,7 +54,8 @@ class CU():
 
         #self.instruction = opcode
         #self.value = value
-        alm = [0000, 1, 10, 11, 100, 101, 110, 111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111]
+        alm = [0000, 1, 10, 11, 100, 101, 110, 111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111, '0000', '0001',
+               '0010', '0011', '0100', '0101', '0110', '0111', '1000', '1001', '1010', '1011', '1100', '1101', '1110', '1111']
         alm2 = ['OUTPUT', 'LD_A', 'LD_B', 'AND', 'ILD_A','STR_A', 'STR_B', 'OR', 'ILD_B', 'ADD', 'SUB', 'JMP', 'JMP_N', 'HALT']
         ins = {
             0000:'OUTPUT',
@@ -256,7 +256,7 @@ class ALU(IC):
             ALU.ZERO_FLAG = False
 
 
-
+brain = IC('Brain PC', "I don't know", '24/08/2019','Get a good grade in this project')
 reg = Registers(4)
 REM = RAM(16)
 read = CU()
@@ -264,6 +264,7 @@ read = CU()
 CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decimales
 
 instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
+
 '''
 ALU.write(instruc[0], reg.A)
 ALU.write(instruc[1], reg.B)
@@ -275,9 +276,9 @@ ALU.write('0010', reg.B)
 ALU.write('0001', reg.A)
 '''
 
-ALU.ZERO('0000')
+#ALU.ZERO('0000')
 
-CU.opCode(0000,70)
+CU.opCode(instruc[0],instruc[1])
 
-print(ALU.NOT(reg.A))
-print(ALU.ZERO_FLAG)
+#print(ALU.NOT(reg.A))
+#print(ALU.ZERO_FLAG)
