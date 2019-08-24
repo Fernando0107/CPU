@@ -72,7 +72,7 @@ class CU():
             1011:'JMP',
             1100:'JMP_N',
             1101:'LD_RD',
-            1110:'',
+            1110:'NOT',
             1111:'HALT',
             'OUTPUT': 'OUTPUT',
             'LD_A': 'LD_A',
@@ -87,7 +87,7 @@ class CU():
             'SUB': 'SUB',
             'JMP': 'JMP',
             'LD_RD': 'LD_RD',
-            'New Op 2 ': '',
+            'NOT': 'NOT',
             'HLT': 'HALT'
         }
 
@@ -246,7 +246,7 @@ class ALU(IC):
             return True
             print("Negative number")
 
-    def NOT(operandnot):
+    def NOT(self,operandnot):
 
         y = 0
 
@@ -284,12 +284,12 @@ print(reg.C)
 print(REM.RAM)
 print(ALU.OVERFLOW_FLAG)
 '''
-ALU.write('1100', reg.B)
-ALU.write('1110', reg.A)
+ALU.write(instruc[1], reg.A)
 
 #ALU.ZERO('0000')
-
-CU.opCode(instruc[0],instruc[1])
+print('Registro A:\n', reg.A)
+CU.opCode(instruc[0],reg.A)
+print('Registro A negado:\n',reg.A)
 
 #print(ALU.NOT(reg.A))
 #print(ALU.ZERO_FLAG)
