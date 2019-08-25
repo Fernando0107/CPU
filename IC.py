@@ -215,17 +215,17 @@ class ALU(IC):
         operand1 = ALU.convert(operand1)
         operand2 = ALU.convert(operand2)
         # Transforma los operandos en integers, luego opera binariamente sobre estos
-        result = str(bin(int(operand1, 2) + int(operand2, 2))
-                     ).replace('b', '0', 1)
+        result = str(bin(int(operand1, 2) + int(operand2, 2))).replace('b', '0', 1)
+        print('Resultado de suma:\n', result[-5:])
         return result
 
     def SUB(self, operandsub, operandsub2):
         operandsub = ALU.convert(operandsub)
         operandsub2 = ALU.convert(operandsub2)
-        resultsub = str(
-            bin(int(operandsub, 2)-int(operandsub2, 2))).replace('b', '0', 1)
+        resultsub = str(bin(int(operandsub, 2)-int(operandsub2, 2))).replace('b', '0', 1)
         resultsub = ALU.negative(resultsub)
-        return resultsub
+        print('Resultado de resta:\n', resultsub[-4:])
+        #return resultsub
 
     def AND(self, operanda, operandb):
         result = [0, 0, 0, 0]
@@ -261,7 +261,7 @@ class ALU(IC):
             else:
                 operandnot[y] = 0
             y += 1
-        return operandnot
+        print('Negado:\n' ,operandnot)
 
     def ZERO(operand0):
 
@@ -294,11 +294,18 @@ print(ALU.OVERFLOW_FLAG)
 ALU.write('1111', reg.A)
 ALU.write('1001', reg.B)
 
-CU.opCode('AND', reg.A, reg.B)
-print(reg.B)
-print(REM.RAM)
-print(reg.A)
+#CU.opCode('AND', reg.A, reg.B)
+#print(reg.B)
+#print(REM.RAM)
+#print(reg.A)
 
+CU.opCode(instruc[0],reg.A,reg.B)           #Probando Resta
+CU.opCode(instruc[2], reg.A, reg.B)         #Probando Suma
+CU.opCode(instruc[5], reg.A, reg.B)         # Probando Suma con string
+CU.opCode(instruc[6], reg.A, reg.B)         # Probando Resta con string
+CU.opCode(instruc[3], reg.A)                #Probando Output
+CU.opCode(instruc[7], reg.A)                # Probando Output con string
+CU.opCode(instruc[4], reg.A)                #Probando Not
 
 #print(ALU.NOT(reg.A))
 #print(ALU.ZERO_FLAG)
