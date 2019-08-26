@@ -17,37 +17,52 @@ class CU():
 
 
     def orchestra(instruc):
+        PC = 0
+        mult = [None] * instruc.count('JMP') * 4
+        mult_n = [None] * instruc.count('JMP_N') * 4
         idops = ['OR', 'AND', 'ADD', 'SUB', 'NOT', '1010', '1001', '0011', '0111', '1110']
+        if 'JMP' in instruc:
+            instruc.extend(mult)
+        if 'JMP_N' in instruc:
+            instruc.extend(mult_n)
         for x in range(len(instruc)):
-
-            if instruc[x] == 'HALT' or instruc[x]=='1111':
+            if instruc[PC] == None:
+                break
+            if instruc[PC] == 'JMP':
+                subindex = ALU.decimal(instruc[PC+1])
+                PC = subindex
+            if instruc[PC] == 'JMP_N' and ALU.NEGATIVE_FLAG == True:
+                subindex = ALU.decimal(instruc[PC+1])
+                PC = subindex
+            if instruc[PC] == 'HALT' or instruc[PC]=='1111':
                 ALU.HALT()
 
             try:
-                if x % 2 == 0:
-                    CU.opCode(instruc[x], instruc[x+1])
+                if PC % 2 == 0:
+                    CU.opCode(instruc[PC], instruc[PC+1])
                 
             except:
                 pass
-            if instruc[x] in idops:
-                if instruc[x+1][0:2] == '00':
+            if instruc[PC] in idops:
+                if instruc[PC+1][0:2] == '00':
                     var0 = reg.A
-                if instruc[x+1][2:4] == '00':
+                if instruc[PC+1][2:4] == '00':
                     var1 = reg.A
-                if instruc[x+1][0:2] == '01':
+                if instruc[PC+1][0:2] == '01':
                     var0 = reg.B
-                if instruc[x+1][2:4] == '01':
+                if instruc[PC+1][2:4] == '01':
                     var1 = reg.B
-                if instruc[x+1][0:2] == '10':
+                if instruc[PC+1][0:2] == '10':
                     var0 = reg.C
-                if instruc[x+1][2:4] == '10':
+                if instruc[PC+1][2:4] == '10':
                     var1 = reg.C
-                if instruc[x+1][0:2] == '11':
+                if instruc[PC+1][0:2] == '11':
                     var0 = reg.D
-                if instruc[x+1][2:4] == '11':
+                if instruc[PC+1][2:4] == '11':
                     var1 = reg.D
-                if x % 2 == 0:  
-                    CU.opCode(instruc[x], var0, var1)
+                if PC % 2 == 0:  
+                    CU.opCode(instruc[PC], var0, var1)
+            PC = PC + 1
 
             
 
@@ -296,9 +311,9 @@ class ALU(IC):
         resultsub = str(
             bin(int(operandsubs, 2)-int(operandsubs2, 2))).replace('b', '0', 1)
         resultsub = ALU.negative(resultsub)
-        resultsub = ALU.fill(resultsub)
-        ALU.write(resultsub, operandsub2)  
-        print('SUB:\n', resultsub)
+        #resultsub = ALU.fill(resultsub)
+        resultsub = ALU.negative(resultsub)
+        ALU.write(resultsub, operandsub2)
 
     def AND(self, operanda, operandb):
         result = [0, 0, 0, 0]
@@ -382,7 +397,7 @@ CU.opCode(instruc[7], reg.A)                # Probando Output con string
 #print(ALU.NOT(reg.A))
 #print(ALU.ZERO_FLAG)
 
-print(instruc)
 CU.orchestra(instruc)
 print(reg.A)
 print(reg.B)
+print(ALU.NEGATIVE_FLAG)
