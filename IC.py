@@ -14,25 +14,6 @@ class IC:
 
 class CU():
 
-    def orchestra(instruc):
-        idops = ['OR', 'AND', 'ADD', 'SUB', 'NOT']
-        for x in range(len(instruc)):
-            try:
-                CU.opCode(instruc[x], instruc[x+1])
-            except:
-                pass
-        if instruc[x] in idops:
-            if instruc[x+1][0:2] == '00':
-                var0 = reg.A
-            if instruc[x+1][2:4] == '00':
-                var1 = reg.A
-            if instruc[x+1][0:2] == '01':
-                var0 = reg.B
-            if instruc[x+1][2:4] == '01':
-                var1 = reg.B 
-            CU.opCode(instruc[x], var0, var1)
-
-
     def read_instructions(filename):
 
         #Open File and split
@@ -80,7 +61,7 @@ class CU():
         #self.value = value
         alm = [0000, 1, 10, 11, 100, 101, 110, 111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111, '0000', '0001',
                '0010', '0011', '0100', '0101', '0110', '0111', '1000', '1001', '1010', '1011', '1100', '1101', '1110', '1111']
-        alm2 = ['OUTPUT', 'LD_A', 'LD_B', 'AND', 'ILD_A','STR_A', 'STR_B', 'OR', 'ILD_B', 'ADD', 'SUB', 'JMP', 'JMP_N', 'NOT', 'HALT']
+        alm2 = ['OUTPUT', 'LD_A', 'LD_B', 'AND', 'ILD_A','STR_A', 'STR_B', 'OR', 'ILD_B', 'ADD', 'SUB', 'JMP', 'JMP_N', 'HALT']
         ins = {
             0000:'OUTPUT',
             1:'LD_A',
@@ -192,30 +173,6 @@ class ALU(IC):
         addrs = ALU.decimal(address)
         RAM[addrs] = result
 
-    def ILD_A(self, binario):
-        try:
-            for x in range(len(binario)):
-                reg.A[x] = int(binario[x])
-        except IndexError:
-            if binario[0] == '1':
-                ALU.OVERFLOW_FLAG = True
-            y = 1
-            for x in range(len(reg.A)):
-                reg.A[x] = int(binario[y])
-                y += 1
-
-    def ILD_B(self, binario):
-        try:
-            for x in range(len(binario)):
-                reg.B[x] = int(binario[x])
-        except IndexError:
-            if binario[0] == '1':
-                ALU.OVERFLOW_FLAG = True
-            y = 1
-            for x in range(len(reg.B)):
-                reg.B[x] = int(binario[y])
-                y += 1
-
     def fill(uncomp):
         if len(uncomp) == 1:
             uncomp = '000'+uncomp
@@ -255,13 +212,12 @@ class ALU(IC):
         ALU.write(result, operand)
 
     def ADD(self, operand1, operand2):
-        operands1 = ALU.convert(operand1)
-        operands2 = ALU.convert(operand2)
+        operand1 = ALU.convert(operand1)
+        operand2 = ALU.convert(operand2)
         # Transforma los operandos en integers, luego opera binariamente sobre estos
-        result = str(bin(int(operands1, 2) + int(operands2, 2))
+        result = str(bin(int(operand1, 2) + int(operand2, 2))
                      ).replace('b', '0', 1)
-        result = ALU.fill(result)
-        ALU.write(result, operand2)
+        return result
 
     def SUB(self, operandsub, operandsub2):
         operandsub = ALU.convert(operandsub)
@@ -280,17 +236,23 @@ class ALU(IC):
                 result[i] = 0
         ALU.write(result, operandb)
 
-    def OR(self, operanda, operandb):
+    def OR(operanda, operandb):
         result = [0, 0, 0, 0]
         for i in range(len(result)):
             if operanda[i] == operandb[i]:
                 result[i] = 0
             else:  
                 result[i] = 1
-        ALU.write(result, operandb)
+        return result
 
-    def NOT(self, operandnot, operandnotsave):
-        print('test')
+    def NEGATIVE(self, operandneg):
+       #operandneg = ALU.convert(operandneg)
+        if operandneg < 0:
+            return True
+            print("Negative number")
+
+    def NOT(self,operandnot):
+
         y = 0
 
         for x in operandnot:
@@ -299,8 +261,7 @@ class ALU(IC):
             else:
                 operandnot[y] = 0
             y += 1
-        f = ALU.convert(operandnot)
-        ALU.write(f, operandnotsave)
+        return operandnot
 
     def ZERO(operand0):
 
@@ -319,6 +280,25 @@ read = CU()
 CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decimales
 
 instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
-CU.orchestra(instruc)
+
+'''
+ALU.write(instruc[0], reg.A)
+ALU.write(instruc[1], reg.B)
+ALU.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
+print(reg.C)
+print(REM.RAM)
+print(ALU.OVERFLOW_FLAG)
+'''
+
+
+ALU.write('1111', reg.A)
+ALU.write('1001', reg.B)
+
+CU.opCode('AND', reg.A, reg.B)
 print(reg.B)
-        
+print(REM.RAM)
+print(reg.A)
+
+
+#print(ALU.NOT(reg.A))
+#print(ALU.ZERO_FLAG)
