@@ -2,7 +2,7 @@
 
 This is a CPU (Control Process Unit) simulator implemented in python.
 
-##Introduction 
+## Introduction 
 
 In this project, we develop a Register file machine 4-bit CPU with 16 bytes of RAM and 4 registers plus one extra, one ALU (Arithmetic Logic Unit).
 
