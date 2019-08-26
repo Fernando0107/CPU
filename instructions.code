@@ -1,14 +1,5 @@
 #Test Output
-0000 1011
+ILD_A 0011
+ILD_B 0001
 #Test NOT
-NOT 0000
-#Test Output
-0000 1000
-#Test Output
-0000 1010
-#Test HALT
-HALT
-#Test Output
-0000 12222
-#Test Output
-0000 1222
+1110 0000

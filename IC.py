@@ -17,29 +17,39 @@ class CU():
 
 
     def orchestra(instruc):
-        idops = ['OUTPUT', 'LD_A', 'LD_B', 'AND', 'ILD_A', 'STR_A', 'STR_B',
-                 'OR', 'ILD_B', 'ADD', 'SUB', 'JMP', 'JMP_N', 'HALT', 'NOT', 'LD_RD']
+        idops = ['OR', 'AND', 'ADD', 'SUB', 'NOT', '1010', '1001', '0011', '0111', '1110']
         for x in range(len(instruc)):
-            
+
             if instruc[x] == 'HALT' or instruc[x]=='1111':
                 ALU.HALT()
 
             try:
-                CU.opCode(instruc[x], instruc[x+1])
+                if x % 2 == 0:
+                    CU.opCode(instruc[x], instruc[x+1])
                 
             except:
                 pass
-        if instruc[x] in idops:
-            if instruc[x+1][0:2] == '00':
-                var0 = reg.A
-            if instruc[x+1][2:4] == '00':
-                var1 = reg.A
-            if instruc[x+1][0:2] == '01':
-                var0 = reg.B
-            if instruc[x+1][2:4] == '01':
-                var1 = reg.B 
-            CU.opCode(instruc[x], var0, var1)
-        x += 1
+            if instruc[x] in idops:
+                if instruc[x+1][0:2] == '00':
+                    var0 = reg.A
+                if instruc[x+1][2:4] == '00':
+                    var1 = reg.A
+                if instruc[x+1][0:2] == '01':
+                    var0 = reg.B
+                if instruc[x+1][2:4] == '01':
+                    var1 = reg.B
+                if instruc[x+1][0:2] == '10':
+                    var0 = reg.C
+                if instruc[x+1][2:4] == '10':
+                    var1 = reg.C
+                if instruc[x+1][0:2] == '11':
+                    var0 = reg.D
+                if instruc[x+1][2:4] == '11':
+                    var1 = reg.D
+                if x % 2 == 0:  
+                    CU.opCode(instruc[x], var0, var1)
+
+            
 
     def read_instructions(filename):
 
@@ -318,7 +328,6 @@ class ALU(IC):
             y += 1
         f = ALU.convert(operandnot)
         ALU.write(f, operandnotsave)
-        print('NOT:\n',operandnot)
 
     def ZERO(operand0):
 
@@ -375,3 +384,5 @@ CU.opCode(instruc[7], reg.A)                # Probando Output con string
 
 print(instruc)
 CU.orchestra(instruc)
+print(reg.A)
+print(reg.B)
