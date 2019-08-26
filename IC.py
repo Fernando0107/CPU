@@ -14,6 +14,25 @@ class IC:
 
 class CU():
 
+
+    def orchestra(instruc):
+        idops = ['OR', 'AND', 'ADD', 'SUB', 'NOT']
+        for x in range(len(instruc)):
+            try:
+                CU.opCode(instruc[x], instruc[x+1])
+            except:
+                pass
+        if instruc[x] in idops:
+            if instruc[x+1][0:2] == '00':
+                var0 = reg.A
+            if instruc[x+1][2:4] == '00':
+                var1 = reg.A
+            if instruc[x+1][0:2] == '01':
+                var0 = reg.B
+            if instruc[x+1][2:4] == '01':
+                var1 = reg.B 
+            CU.opCode(instruc[x], var0, var1)
+
     def read_instructions(filename):
 
         #Open File and split
@@ -173,6 +192,30 @@ class ALU(IC):
         addrs = ALU.decimal(address)
         RAM[addrs] = result
 
+    def ILD_A(self, binario):
+        try:
+            for x in range(len(binario)):
+                reg.A[x] = int(binario[x])
+        except IndexError:
+            if binario[0] == '1':
+                ALU.OVERFLOW_FLAG = True
+            y = 1
+            for x in range(len(reg.A)):
+                reg.A[x] = int(binario[y])
+                y += 1
+
+    def ILD_B(self, binario):
+        try:
+            for x in range(len(binario)):
+                reg.B[x] = int(binario[x])
+        except IndexError:
+            if binario[0] == '1':
+                ALU.OVERFLOW_FLAG = True
+            y = 1
+            for x in range(len(reg.B)):
+                reg.B[x] = int(binario[y])
+                y += 1
+
     def fill(uncomp):
         if len(uncomp) == 1:
             uncomp = '000'+uncomp
@@ -212,20 +255,22 @@ class ALU(IC):
         ALU.write(result, operand)
 
     def ADD(self, operand1, operand2):
-        operand1 = ALU.convert(operand1)
-        operand2 = ALU.convert(operand2)
+        operands1 = ALU.convert(operand1)
+        operands2 = ALU.convert(operand2)
         # Transforma los operandos en integers, luego opera binariamente sobre estos
-        result = str(bin(int(operand1, 2) + int(operand2, 2))).replace('b', '0', 1)
-        print('Resultado de suma:\n', result[-5:])
-        return result
+        result = str(bin(int(operands1, 2) + int(operands2, 2))
+                     ).replace('b', '0', 1)
+        result = ALU.fill(result)
+        ALU.write(result, operand2)
 
     def SUB(self, operandsub, operandsub2):
-        operandsub = ALU.convert(operandsub)
-        operandsub2 = ALU.convert(operandsub2)
-        resultsub = str(bin(int(operandsub, 2)-int(operandsub2, 2))).replace('b', '0', 1)
+        operandsubs = ALU.convert(operandsub)
+        operandsubs2 = ALU.convert(operandsub2)
+        resultsub = str(
+            bin(int(operandsubs, 2)-int(operandsubs2, 2))).replace('b', '0', 1)
         resultsub = ALU.negative(resultsub)
-        print('Resultado de resta:\n', resultsub[-4:])
-        #return resultsub
+        resultsub = ALU.fill(resultsub)
+        ALU.write(resultsub, operandsub2)       
 
     def AND(self, operanda, operandb):
         result = [0, 0, 0, 0]
@@ -236,23 +281,16 @@ class ALU(IC):
                 result[i] = 0
         ALU.write(result, operandb)
 
-    def OR(operanda, operandb):
+    def OR(self, operanda, operandb):
         result = [0, 0, 0, 0]
         for i in range(len(result)):
             if operanda[i] == operandb[i]:
                 result[i] = 0
             else:  
                 result[i] = 1
-        return result
+        ALU.write(result, operandb)
 
-    def NEGATIVE(self, operandneg):
-       #operandneg = ALU.convert(operandneg)
-        if operandneg < 0:
-            return True
-            print("Negative number")
-
-    def NOT(self,operandnot):
-
+    def NOT(self, operandnot, operandnotsave):
         y = 0
 
         for x in operandnot:
@@ -261,7 +299,8 @@ class ALU(IC):
             else:
                 operandnot[y] = 0
             y += 1
-        print('Negado:\n' ,operandnot)
+        f = ALU.convert(operandnot)
+        ALU.write(f, operandnotsave)
 
     def ZERO(operand0):
 
@@ -299,13 +338,13 @@ ALU.write('1001', reg.B)
 #print(REM.RAM)
 #print(reg.A)
 
-CU.opCode(instruc[0],reg.A,reg.B)           #Probando Resta
+CU.opCode(instruc[0], reg.A,reg.B)           #Probando Resta
 CU.opCode(instruc[2], reg.A, reg.B)         #Probando Suma
 CU.opCode(instruc[5], reg.A, reg.B)         # Probando Suma con string
 CU.opCode(instruc[6], reg.A, reg.B)         # Probando Resta con string
 CU.opCode(instruc[3], reg.A)                #Probando Output
 CU.opCode(instruc[7], reg.A)                # Probando Output con string
-CU.opCode(instruc[4], reg.A)                #Probando Not
+CU.opCode(instruc[4], reg.A, reg.B)                #Probando Not
 
 #print(ALU.NOT(reg.A))
 #print(ALU.ZERO_FLAG)
