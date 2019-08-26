@@ -12,7 +12,9 @@ In this project, we develop a Register file machine 4-bit CPU with 16 bytes of R
 
 A CPU (control process unit) is conformed in the most simple way of:
 
-![CPU](https://upload.wikimedia.org/wikipedia/commons/d/d8/ABasicComputer.gif)
+<p align="center">
+  <img width="460" height="300" src="https://upload.wikimedia.org/wikipedia/commons/d/d8/ABasicComputer.gif">
+</p>
 
 #### CU
 
