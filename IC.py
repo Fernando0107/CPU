@@ -1,6 +1,7 @@
 from Memory import *                                            #From file Memory, import erything
 from Clock import *
-#from ALU import *
+
+import sys
 import random
 
 
@@ -16,10 +17,16 @@ class CU():
 
 
     def orchestra(instruc):
-        idops = ['OR', 'AND', 'ADD', 'SUB', 'NOT']
+        idops = ['OUTPUT', 'LD_A', 'LD_B', 'AND', 'ILD_A', 'STR_A', 'STR_B',
+                 'OR', 'ILD_B', 'ADD', 'SUB', 'JMP', 'JMP_N', 'HALT', 'NOT', 'LD_RD']
         for x in range(len(instruc)):
+            
+            if instruc[x] == 'HALT' or instruc[x]=='1111':
+                ALU.HALT()
+
             try:
                 CU.opCode(instruc[x], instruc[x+1])
+                
             except:
                 pass
         if instruc[x] in idops:
@@ -32,6 +39,7 @@ class CU():
             if instruc[x+1][2:4] == '01':
                 var1 = reg.B 
             CU.opCode(instruc[x], var0, var1)
+        x += 1
 
     def read_instructions(filename):
 
@@ -80,7 +88,8 @@ class CU():
         #self.value = value
         alm = [0000, 1, 10, 11, 100, 101, 110, 111, 1000, 1001, 1010, 1011, 1100, 1101, 1110, 1111, '0000', '0001',
                '0010', '0011', '0100', '0101', '0110', '0111', '1000', '1001', '1010', '1011', '1100', '1101', '1110', '1111']
-        alm2 = ['OUTPUT', 'LD_A', 'LD_B', 'AND', 'ILD_A','STR_A', 'STR_B', 'OR', 'ILD_B', 'ADD', 'SUB', 'JMP', 'JMP_N', 'HALT']
+        alm2 = ['OUTPUT', 'LD_A', 'LD_B', 'AND', 'ILD_A', 'STR_A', 'STR_B',
+                'OR', 'ILD_B', 'ADD', 'SUB', 'JMP', 'JMP_N', 'HALT', 'NOT', 'LD_RD']
         ins = {
             0000:'OUTPUT',
             1:'LD_A',
@@ -112,15 +121,20 @@ class CU():
             'JMP': 'JMP',
             'LD_RD': 'LD_RD',
             'NOT': 'NOT',
-            'HLT': 'HALT'
+            'HALT': 'HALT'
         }
         if str(opcode).isdigit():                                               #Revisa si el opcode es un numero o es un strig
+
+            #if opcode == 'HALT' or opcode == '1111':
+                    #ALU.HALT()
 
             if opcode in alm:                                                       #Verifica si el numero esta en el almacenador de opcodes en digitos 
                 
                 x = ins[int(opcode)]                                            #Almacena el valor del Opcode, que sera el atributo del motodo ALU
                 brain = getattr(ALU(), x, '\nOpcode instruction is not valid.\n')    # getatrr es equivalente a objeto.atrubuto | retorna el atributo
-                
+
+                if value == 0 and value2 == 'default' and value3 == 'default':
+                    ALU.HALT()
                 if value2 == 'default' and value3 == 'default':
                     brain(value)
                 if value2 != 'default' and value3 == 'default':
@@ -137,6 +151,8 @@ class CU():
                 y = ins[(opcode)]
                 brain = getattr(ALU(), y, '\nOpcode instruction is not valid.\n')
 
+                if value ==0 and value2 == 'default' and value3 == 'default':
+                    ALU.HALT()
                 if value2 == 'default' and value3 == 'default':
                     brain(value)
                 if value2 != 'default' and value3 == 'default':
@@ -262,6 +278,7 @@ class ALU(IC):
                      ).replace('b', '0', 1)
         result = ALU.fill(result)
         ALU.write(result, operand2)
+        
 
     def SUB(self, operandsub, operandsub2):
         operandsubs = ALU.convert(operandsub)
@@ -270,7 +287,8 @@ class ALU(IC):
             bin(int(operandsubs, 2)-int(operandsubs2, 2))).replace('b', '0', 1)
         resultsub = ALU.negative(resultsub)
         resultsub = ALU.fill(resultsub)
-        ALU.write(resultsub, operandsub2)       
+        ALU.write(resultsub, operandsub2)  
+        print('SUB:\n', resultsub)
 
     def AND(self, operanda, operandb):
         result = [0, 0, 0, 0]
@@ -292,7 +310,6 @@ class ALU(IC):
 
     def NOT(self, operandnot, operandnotsave):
         y = 0
-
         for x in operandnot:
             if x == 0:
                 operandnot[y] = 1
@@ -301,6 +318,7 @@ class ALU(IC):
             y += 1
         f = ALU.convert(operandnot)
         ALU.write(f, operandnotsave)
+        print('NOT:\n',operandnot)
 
     def ZERO(operand0):
 
@@ -309,6 +327,9 @@ class ALU(IC):
             ALU.ZERO_FLAG = True                             # Se arreglo la funcion
         else:
             ALU.ZERO_FLAG = False
+    
+    def HALT():
+        sys.exit()
 
 
 brain = IC('Brain PC', "I don't know", '24/08/2019','Get a good grade in this project')
@@ -330,21 +351,27 @@ print(ALU.OVERFLOW_FLAG)
 '''
 
 
-ALU.write('1111', reg.A)
-ALU.write('1001', reg.B)
+#ALU.write('1111', reg.A)
+#ALU.write('1001', reg.B)
 
 #CU.opCode('AND', reg.A, reg.B)
 #print(reg.B)
 #print(REM.RAM)
 #print(reg.A)
-
+'''
 CU.opCode(instruc[0], reg.A,reg.B)           #Probando Resta
 CU.opCode(instruc[2], reg.A, reg.B)         #Probando Suma
 CU.opCode(instruc[5], reg.A, reg.B)         # Probando Suma con string
 CU.opCode(instruc[6], reg.A, reg.B)         # Probando Resta con string
 CU.opCode(instruc[3], reg.A)                #Probando Output
 CU.opCode(instruc[7], reg.A)                # Probando Output con string
-CU.opCode(instruc[4], reg.A, reg.B)                #Probando Not
+'''
+#CU.opCode('HALT')                #Probando HALT
+#print('test')
+#ALU.HALT()
 
 #print(ALU.NOT(reg.A))
 #print(ALU.ZERO_FLAG)
+
+print(instruc)
+CU.orchestra(instruc)

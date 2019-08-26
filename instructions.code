@@ -1,14 +1,14 @@
-#Probando Resta
-1010 0010
-#Probando Suma
-1001
-#Probando Output
-0000
-#Probando NOT
-1110
-#Probando Suma con string
-ADD
-#Probando Resta con string
-SUB
-#Probando OUTPUT con string
-OUTPUT
+#Test Output
+0000 1011
+#Test NOT
+NOT 0000
+#Test Output
+0000 1000
+#Test Output
+0000 1010
+#Test HALT
+HALT
+#Test Output
+0000 12222
+#Test Output
+0000 1222
