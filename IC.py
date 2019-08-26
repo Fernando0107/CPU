@@ -3,8 +3,6 @@ from Clock import *
 
 import sys
 import random
-
-
 import time
 
 
@@ -71,9 +69,7 @@ class CU():
                     var1 = reg.D
                 if PC % 2 == 0:  
                     CU.opCode(instruc[PC], var0, var1)
-            PC = PC + 1
-
-            
+            PC = PC + 1           
 
     def read_instructions(filename):
 
