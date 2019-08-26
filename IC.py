@@ -343,6 +343,7 @@ class ALU(IC):
             y += 1
         f = ALU.convert(operandnot)
         ALU.write(f, operandnotsave)
+        #print('NOT?:\n', operandnot)
 
     def ZERO(operand0):
 
@@ -398,6 +399,6 @@ CU.opCode(instruc[7], reg.A)                # Probando Output con string
 #print(ALU.ZERO_FLAG)
 
 CU.orchestra(instruc)
-print(reg.A)
-print(reg.B)
-print(ALU.NEGATIVE_FLAG)
+print('Registro A:\n',reg.A)
+print('Registro B:\n',reg.B)
+#print(ALU.NEGATIVE_FLAG)
