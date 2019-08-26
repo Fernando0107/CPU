@@ -22,14 +22,13 @@ ILD_A 0011
 0000 01030
 #Test ILD_B
 ILD_B 0100
+JMP 11110
 #Test Output
 0000 0106
 #Test SUB
 SUB 0001
 #Test Output
 0000 1111111
-#Tests JMP_N
-JMP_N 1100
 #Test ILD_B
 ILD_B 0001
 #Test Output

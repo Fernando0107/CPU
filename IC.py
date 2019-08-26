@@ -5,6 +5,9 @@ import sys
 import random
 
 
+import time
+
+
 class IC:
 
     def __init__(self, name, manufacture, build_date, porpose):
@@ -16,10 +19,10 @@ class IC:
 class CU():
 
 
-    def orchestra(instruc):
+    def orchestra(instruc, clock_speed):
         PC = 0
-        mult = [None] * instruc.count('JMP') * 4
-        mult_n = [None] * instruc.count('JMP_N') * 4
+        mult = [None] * instruc.count('JMP') * 16
+        mult_n = [None] * instruc.count('JMP_N') * 16
         idops = ['OR', 'AND', 'ADD', 'SUB', 'NOT', '1010', '1001', '0011', '0111', '1110']
         if 'JMP' in instruc:
             instruc.extend(mult)
@@ -39,8 +42,14 @@ class CU():
 
             try:
                 if PC % 2 == 0:
-                    CU.opCode(instruc[PC], instruc[PC+1])
-                
+                    #Clock.Hz(clock_speed)
+                    print('\n FETCH {} \n'.format(instruc[PC]))
+                    if float(clock_speed) == 0:
+                        input('PRESS A KEY TO CONTINUE')
+                    if float(clock_speed) > 0:
+                        Clock.Hz(clock_speed)
+                    print('\n EXECUTE {} \n'.format(instruc[PC]))
+                    CU.opCode(instruc[PC], instruc[PC+1])                
             except:
                 pass
             if instruc[PC] in idops:
@@ -275,6 +284,12 @@ class ALU(IC):
         return value
 
     def OUTPUT(self, value):
+        if type(value) is list:
+            value = ALU.convert(value)
+            value = int(value)
+        elif type(value) is int:
+            value = str(value)
+            value = ALU.fill(value)
         print('Output:\n', value)
 
     def LD_A(self, operand, address, RAM):
@@ -361,9 +376,10 @@ brain = IC('Brain PC', "I don't know", '24/08/2019','Get a good grade in this pr
 reg = Registers(4)
 REM = RAM(16)
 read = CU()
+clock = Clock('clock', 'i5', 'Intel')
 
-CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decimales
-
+CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decima
+clock_speed = (CU.read_instructions('bios.yml'))
 instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
 
 '''
@@ -398,7 +414,10 @@ CU.opCode(instruc[7], reg.A)                # Probando Output con string
 #print(ALU.NOT(reg.A))
 #print(ALU.ZERO_FLAG)
 
-CU.orchestra(instruc)
+CU.orchestra(instruc, clock_speed[1])
+#print(REM.RAM)
+#ALU.write('0001', reg.A)
+#ALU.OUTPUT(ALU, REM.RAM[0])
 print('Registro A:\n',reg.A)
 print('Registro B:\n',reg.B)
 #print(ALU.NEGATIVE_FLAG)
