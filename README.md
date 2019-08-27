@@ -122,7 +122,7 @@ Give an example
 
 * **Fernando Gonzalez** - *Developer* - [GitHub](https://github.com/Fernando0107)
 * **Diego Quan** - *Developer* - [GitHub](https://github.com/dquan101)
-* ~~**Andriana Mundo** - *Developer* - [GitHub](https://github.com/dquan101)~~
+* **Andriana Mundo** - *Developer* - [GitHub](https://github.com/dquan101)
 
 
 ## License

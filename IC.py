@@ -1,6 +1,5 @@
 from Memory import *                                            #From file Memory, import erything
 from Clock import *
-
 import sys
 import random
 import time
@@ -8,11 +7,18 @@ import time
 
 class IC:
 
-    def __init__(self, name, manufacture, build_date, porpose):
+    def __init__(self, name, manufacture, build, porpose):
         self.name = name
         self.manufacture = manufacture
-        self.build = build_date
+        self.build = build
         self.porpose = porpose
+    
+    def brian_IC(self):
+    
+        print('\nCPU Name:',self.name,'\n')
+        print('Manufacture: \n' ,self.manufacture,'\n')
+        print('Build date:', self.build, '\n')
+        print('Porpuse: \n', self.porpose, '\n')
 
 class CU():
 
@@ -156,7 +162,17 @@ class CU():
             'JMP': 'JMP',
             'LD_RD': 'LD_RD',
             'NOT': 'NOT',
-            'HALT': 'HALT'
+            'HALT': 'HALT',
+            'OUTPUT': 'OUTPUT',
+            'LOAD_A': 'LD_A',
+            'LOAD_B': 'LD_B',
+            'ILOAD_A': 'ILD_A',
+            'STORE_A': 'STR_A',
+            'STORE_B': 'STR_B',
+            'OR': 'OR',
+            'ILOAD_B': 'ILD_B',
+            'JUMP': 'JMP',
+            'LOAD_RD': 'LD_RD',
         }
         if str(opcode).isdigit():                                               #Revisa si el opcode es un numero o es un strig
 
@@ -380,9 +396,78 @@ class ALU(IC):
             ALU.ZERO_FLAG = False
     
     def HALT():
+        print('\n ---------- End Program ---------- \n')
         sys.exit()
+
+
+def Brain():
+
+    print('---------- Welcome! ----------')
+
+    brain = IC("Brain PC", "I don't know","26/08/2019", "Conquer the cyber world!")
+
+    brain.brian_IC()
+
+    x = input('Continue with file No. 1? (y/n)\n')
+
+    if x == 'n' or x == 'N':
+        ALU.HALT()
+    else:
+        pass
+
+    print('\n---------- Executing file No. 1 ----------')
+    # Instruc es el arreglo de instrucciones
+    instruc = CU.read_instructions('instructions.code')
+    CU.orchestra(instruc, clock_speed[1], REM.RAM)
+
+    x = input('Continue with file No. 2? (y/n)\n')
+
+    if x == 'n' or x == 'N':
+        ALU.HALT()
+    else:
+        pass
+
+    print('\n---------- Executing file No. 2 ----------')
+    instruc = CU.read_instructions('ins2.code')
+    CU.orchestra(instruc, clock_speed[1], REM.RAM)
+
+    x = input('Continue with file No. 3? (y/n)\n')
+
+    if x == 'n' or x == 'N':
+        ALU.HALT()
+    else:
+        pass
+
+    print('\n---------- Executing file No. 3 ----------')
+    instruc = CU.read_instructions('ins3.code')
+    CU.orchestra(instruc, clock_speed[1], REM.RAM)
+
+    x = input('Continue with file No. 4? (y/n)\n')
+
+    if x == 'n' or x == 'N':
+        ALU.HALT()
+    else:
+        pass
+
+    print('\n---------- Executing file No. 4 ----------')
+    instruc = CU.read_instructions('ins4.code')
+    CU.orchestra(instruc, clock_speed[1], REM.RAM)
+
+    x = input('Continue with file No. 5? (y/n)\n')
+
+    if x == 'n' or x == 'N':
+        ALU.HALT()
+    else:
+        pass
+
+    print('\n---------- Executing file No. 5 ----------')
+    instruc = CU.read_instructions('ins5.code')
+    CU.orchestra(instruc, clock_speed[1], REM.RAM)
+
+    print('\n ---------- End Program ---------- \n')
+
 if __name__ == "__main__":
-    brain = IC('Brain PC', "I don't know", '24/08/2019','Get a good grade in this project')
+
     REG = Registers(4)
     REM = RAM(16)
     read = CU()
@@ -390,5 +475,9 @@ if __name__ == "__main__":
 
     CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decima
     clock_speed = (CU.read_instructions('bios.yml'))
-    instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
-    CU.orchestra(instruc, clock_speed[1], REM.RAM)
+    Brain()
+    #instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
+    #CU.orchestra(instruc, clock_speed[1], REM.RAM)
+
+
+    
