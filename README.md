@@ -94,15 +94,13 @@ https://www.python.org/downloads/
 
 Now, with python installed, follow the following instructions...
 
-In your terminal, type and run this lines:
+In your terminal, type and run this line:
 
 ```
-pip install time 
-pip install sys
 pip install random
 ```
 
-This libraries will be required for our code to run properly.
+This librarie will be required for our code to run properly.
 
 ### Docker
 
