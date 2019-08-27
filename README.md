@@ -88,7 +88,7 @@ If you have Docker installed in your computer, you just need to run this line in
 
 
 ```
-docker run -it --rm fernando7/ic:0.1
+docker run -it --rm fernando7/ic:0.2
 ```
 
 This will run the program automatically, you should be able to watch how the instructions are being executed.
