@@ -104,10 +104,12 @@ This librarie will be required for our code to run properly.
 
 ### Docker
 
-If you have Docker installed in your computer, you just need to run this line in your terminal.
+If you have Docker installed in your computer, you just need to run this lines in your terminal.
 
 
 ```
+docker pull fernando7/ic:0.2
+
 docker run -it --rm fernando7/ic:0.2
 ```
 
