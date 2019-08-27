@@ -55,6 +55,29 @@ In charge of control the fetch-decode-execute cycle.
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
+### Intruction Set Table
+
+| OP CODE 4 bit  | Instruction |Description  | Adress or Regs |
+| ------------- | ------------- | ------------- | -------------|
+| 0000  | OUTPUT  | Wires OUTPUT register directly to RAM address location (writes to console)  | 4-bit RAM address | 
+| 0001  | LD_A  | Reads RAM location into register A | 4-bit RAM address |
+| 0010  | LD_B | Reads RAM location into register B  | 4-bit RAM address | 
+| 0011  | AND  | Performs AND between 2-bit registers ID | 2 bit register ID |
+| 0100  | ILD_A  | Immediate Read constant into register A | 4-bit constant | 
+| 0101  | STR_A  | Write from Register A into RAM location  | 4-bit RAM address |
+| 1010  | STR_B  | Write from Register B into RAM location  | 4-bit RAM address | 
+| 1011  | OR  | Performs OR between 2-bit registers ID  | 2 bit register ID |
+| 1000 | ILD_B  | Immediate Read constant into register B  | 4-bit RAM address | 
+| 1001  | ADD  | Add two registers, store result into second register  | 2 bit registers ID |
+| 0110  | SUB  | Subtract two registers, store result into second register | 2 bit register ID | 
+| 0111  | JMP | update Inst. Addr. Reg to new address | 4-bit code address|
+| 1100 | JMP_N  | IF ALU result was negative , update Inst. Addr. Reg to new address  | 4-bit memory address | 
+| 1101  | LD_RD  | Reads a Random Number into a register  | 4-bit RAM address |
+| 1110 | NOT  | Returns the opposite of a given value | 4-bit RAM address | 
+| 1111  | HALT  | Program done. Halt computer  | NA |
+
+This are the instructions that our CPU simulator can execute with a given OPcode.
+
 ### Prerequisites
 
 What things you need to run the code and how to install them 
@@ -70,7 +93,6 @@ https://www.python.org/downloads/
 ```
 
 Now, with python installed, follow the following instructions...
-
 
 In your terminal, type and run this lines:
 
@@ -91,27 +113,41 @@ If you have Docker installed in your computer, you just need to run this line in
 docker run -it --rm fernando7/ic:0.2
 ```
 
-This will run the program automatically, you should be able to watch how the instructions are being executed.
+This will run the program automatically, you should be able to watch how the instructions are being executed :).
 
-## Running the tests
+## Running the code
 
-Explain how to run the automated tests for this system
+When you finish installing the prerequisites, now you can run the program!
 
-### Break down into end to end tests
-
-Explain what these tests test and why
+Execute the following line in your terminal:
 
 ```
-Give an example
+python IC.py
 ```
 
-### And coding style tests
+And that's it! you should be able to watch our cool CPU simulator
+being awesome ;)
 
-Explain what these tests test and why
+## Test the CPU by your own 
+
+If you want to execute more instructions, or try different type of operations with the registers, all you have to do is modify any of the following .code files: 
 
 ```
-Give an example
+instructions.code 
+
+ins2.code
+
+ins3.code
+
+ins4.code
+
+ins4.code
+
+ins5.code
 ```
+
+> Remember our CPU is 4 bits, so you have to keep that in mind when you try any operation.  
+
 
 ## Built With
 
@@ -122,15 +158,4 @@ Give an example
 
 * **Fernando Gonzalez** - *Developer* - [GitHub](https://github.com/Fernando0107)
 * **Diego Quan** - *Developer* - [GitHub](https://github.com/dquan101)
-* **Andriana Mundo** - *Developer* - [GitHub](https://github.com/dquan101)
-
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* **Andriana Mundo** - *Developer* - [GitHub]()
