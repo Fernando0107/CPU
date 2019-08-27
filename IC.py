@@ -17,10 +17,11 @@ class IC:
 class CU():
 
 
-    def orchestra(instruc, clock_speed):
+    def orchestra(instruc, clock_speed, RAM):
         PC = 0
         mult = [None] * instruc.count('JMP') * 16
         mult_n = [None] * instruc.count('JMP_N') * 16
+        idstr = ['LD_A', 'LD_B', 'STR_A', 'STR_B', 'OUTPUT']
         idops = ['OR', 'AND', 'ADD', 'SUB', 'NOT', '1010', '1001', '0011', '0111', '1110']
         if 'JMP' in instruc:
             instruc.extend(mult)
@@ -35,7 +36,7 @@ class CU():
             if instruc[PC] == 'JMP_N' and ALU.NEGATIVE_FLAG == True:
                 subindex = ALU.decimal(instruc[PC+1])
                 PC = subindex
-            if instruc[PC] == 'HALT' or instruc[PC]=='1111':
+            if instruc[PC] == 'HALT':
                 ALU.HALT()
 
             try:
@@ -52,23 +53,27 @@ class CU():
                 pass
             if instruc[PC] in idops:
                 if instruc[PC+1][0:2] == '00':
-                    var0 = reg.A
+                    var0 = REG.A
                 if instruc[PC+1][2:4] == '00':
-                    var1 = reg.A
+                    var1 = REG.A
                 if instruc[PC+1][0:2] == '01':
-                    var0 = reg.B
+                    var0 = REG.B
                 if instruc[PC+1][2:4] == '01':
-                    var1 = reg.B
+                    var1 = REG.B
                 if instruc[PC+1][0:2] == '10':
-                    var0 = reg.C
+                    var0 = REG.C
                 if instruc[PC+1][2:4] == '10':
-                    var1 = reg.C
+                    var1 = REG.C
                 if instruc[PC+1][0:2] == '11':
-                    var0 = reg.D
+                    var0 = REG.D
                 if instruc[PC+1][2:4] == '11':
-                    var1 = reg.D
+                    var1 = REG.D
                 if PC % 2 == 0:  
                     CU.opCode(instruc[PC], var0, var1)
+            if instruc[PC] in idstr:
+                if PC % 2 == 0:
+                    CU.opCode(instruc[PC], instruc[PC+1], RAM)
+
             PC = PC + 1           
 
     def read_instructions(filename):
@@ -226,14 +231,14 @@ class ALU(IC):
     def binary(n):
         return bin(n).replace("0b", "")
 
-    def STR_A(self, operand, address, RAM):
-        result = ALU.convert(operand)
+    def STR_A(self, address, RAM):
+        result = ALU.convert(REG.A)
         result = int(result)
         addrs = ALU.decimal(address)
         RAM[addrs] = result
 
-    def STR_B(self, operand, address, RAM):
-        result = ALU.convert(operand)
+    def STR_B(self, address, RAM):
+        result = ALU.convert(REG.B)
         result = int(result)
         addrs = ALU.decimal(address)
         RAM[addrs] = result
@@ -241,25 +246,25 @@ class ALU(IC):
     def ILD_A(self, binario):
         try:
             for x in range(len(binario)):
-                reg.A[x] = int(binario[x])
+                REG.A[x] = int(binario[x])
         except IndexError:
             if binario[0] == '1':
                 ALU.OVERFLOW_FLAG = True
             y = 1
-            for x in range(len(reg.A)):
-                reg.A[x] = int(binario[y])
+            for x in range(len(REG.A)):
+                REG.A[x] = int(binario[y])
                 y += 1
 
     def ILD_B(self, binario):
         try:
             for x in range(len(binario)):
-                reg.B[x] = int(binario[x])
+                REG.B[x] = int(binario[x])
         except IndexError:
             if binario[0] == '1':
                 ALU.OVERFLOW_FLAG = True
             y = 1
-            for x in range(len(reg.B)):
-                reg.B[x] = int(binario[y])
+            for x in range(len(REG.B)):
+                REG.B[x] = int(binario[y])
                 y += 1
 
     def fill(uncomp):
@@ -279,26 +284,32 @@ class ALU(IC):
             value = value.replace('-', '0', 1)
         return value
 
-    def OUTPUT(self, value):
-        if type(value) is list:
-            value = ALU.convert(value)
-            value = int(value)
-        elif type(value) is int:
-            value = str(value)
-            value = ALU.fill(value)
-        print('Output:\n', value)
+    def OUTPUT(self, value, RAM):
+        if type(RAM) is list:
 
-    def LD_A(self, operand, address, RAM):
+            result = RAM[ALU.decimal(value)]
+            result = str(result)
+            result = ALU.fill(result)
+            print('OUTPUT:',result)
+        '''if type(value) is list:
+                                    value = ALU.convert(value)
+                                    value = int(value)
+                                elif type(value) is int:
+                                    value = str(value)
+                                    value = ALU.fill(value)
+                                print('Output:\n', value)'''
+
+    def LD_A(self, address, RAM):
         addrs = ALU.decimal(address)
         result = str(RAM[addrs])
         result = ALU.fill(result)
-        ALU.write(result, operand)
+        ALU.write(result, REG.A)
 
-    def LD_B(self, operand, address, RAM):
+    def LD_B(self, address, RAM):
         addrs = ALU.decimal(address)
         result = str(RAM[addrs])
         result = ALU.fill(result)
-        ALU.write(result, operand)
+        ALU.write(result, REG.B)
 
     def LD_RD(self, operand):
         result = random.randint(0, 15)
@@ -312,7 +323,11 @@ class ALU(IC):
         # Transforma los operandos en integers, luego opera binariamente sobre estos
         result = str(bin(int(operands1, 2) + int(operands2, 2))
                      ).replace('b', '0', 1)
-        result = ALU.fill(result)
+        if len(result) < 4:
+            result = ALU.fill(result)
+        if len(result) > 4:
+            subindexx = len(result) - 4
+            result = result[subindexx:]
         ALU.write(result, operand2)
         
 
@@ -366,54 +381,14 @@ class ALU(IC):
     
     def HALT():
         sys.exit()
+if __name__ == "__main__":
+    brain = IC('Brain PC', "I don't know", '24/08/2019','Get a good grade in this project')
+    REG = Registers(4)
+    REM = RAM(16)
+    read = CU()
+    clock = Clock('clock', 'i5', 'Intel')
 
-
-brain = IC('Brain PC', "I don't know", '24/08/2019','Get a good grade in this project')
-reg = Registers(4)
-REM = RAM(16)
-read = CU()
-clock = Clock('clock', 'i5', 'Intel')
-
-CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decima
-clock_speed = (CU.read_instructions('bios.yml'))
-instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
-
-'''
-ALU.write(instruc[0], reg.A)
-ALU.write(instruc[1], reg.B)
-ALU.write(ALU.ADD(ALU,reg.A, reg.B), reg.C)
-print(reg.C)
-print(REM.RAM)
-print(ALU.OVERFLOW_FLAG)
-'''
-
-
-#ALU.write('1111', reg.A)
-#ALU.write('1001', reg.B)
-
-#CU.opCode('AND', reg.A, reg.B)
-#print(reg.B)
-#print(REM.RAM)
-#print(reg.A)
-'''
-CU.opCode(instruc[0], reg.A,reg.B)           #Probando Resta
-CU.opCode(instruc[2], reg.A, reg.B)         #Probando Suma
-CU.opCode(instruc[5], reg.A, reg.B)         # Probando Suma con string
-CU.opCode(instruc[6], reg.A, reg.B)         # Probando Resta con string
-CU.opCode(instruc[3], reg.A)                #Probando Output
-CU.opCode(instruc[7], reg.A)                # Probando Output con string
-'''
-#CU.opCode('HALT')                #Probando HALT
-#print('test')
-#ALU.HALT()
-
-#print(ALU.NOT(reg.A))
-#print(ALU.ZERO_FLAG)
-
-CU.orchestra(instruc, clock_speed[1])
-#print(REM.RAM)
-#ALU.write('0001', reg.A)
-#ALU.OUTPUT(ALU, REM.RAM[0])
-print('Registro A:\n',reg.A)
-print('Registro B:\n',reg.B)
-#print(ALU.NEGATIVE_FLAG)
+    CU.turn_on(CU, 'bios.yml', 'instructions.code', REM.RAM)                 # Imprime los valores de la ram en decima
+    clock_speed = (CU.read_instructions('bios.yml'))
+    instruc = CU.read_instructions('instructions.code')                      # Instruc es el arreglo de instrucciones
+    CU.orchestra(instruc, clock_speed[1], REM.RAM)
